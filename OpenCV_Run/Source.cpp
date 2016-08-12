@@ -36,7 +36,7 @@ int main(void)
 
 	// Read the video stream
 	Mat frame;
-	cout << "okay";
+
 	for (;;)
 	{
 		capture >> frame;
