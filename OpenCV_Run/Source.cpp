@@ -64,12 +64,10 @@ int main(void)
 void detectAndDisplay(Mat frame)
 {
 	std::vector<Rect> faces;
-	Mat frame_gray;
-	Mat crop;
-	Mat res;
-	Mat gray;
+	Mat frame_gray, crop, res, gray;
 	string text;
 	stringstream sstm;
+	
 	Point cen_win(frame.size().width / 2, frame.size().height / 2);
 
 	cvtColor(frame, frame_gray, COLOR_BGR2GRAY);
@@ -77,10 +75,6 @@ void detectAndDisplay(Mat frame)
 
 	// Detect faces
 	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-
-	// Set Region of Interest
-	cv::Rect roi_b;
-	cv::Rect roi_c;
 
 	size_t ic = 0; // ic is index of current element
 	int ac = 0; // ac is area of current element
@@ -90,49 +84,41 @@ void detectAndDisplay(Mat frame)
 
 	for (ic = 0; ic < faces.size(); ic++) // Iterate through all current elements (detected faces)
 	{
-		roi_c.x = faces[ic].x; // x coordinate of top left corner of the rectangle with index ic. 
-		roi_c.y = faces[ic].y; // y coordinate of top left coordiante of the rectangle with index ic
-		roi_c.width = (faces[ic].width); // width of rectangle 
-		roi_c.height = (faces[ic].height); //height of rectangle
+		ac = faces[ic].area();
+		ab = faces[ib].area();
 
-		ac = roi_c.width * roi_c.height; // Get the area of current element (detected face). Above code is redunadant.
-
-		roi_b.x = faces[ib].x;
-		roi_b.y = faces[ib].y;
-		roi_b.width = (faces[ib].width);
-		roi_b.height = (faces[ib].height);
-
-		ab = roi_b.width * roi_b.height; // Get the area of biggest element, at beginning it is same as "current" element
-
-		if (ac > ab)
-		{
-			ib = ic;
-			roi_b.x = faces[ib].x;
-			roi_b.y = faces[ib].y;
-			roi_b.width = (faces[ib].width);
-			roi_b.height = (faces[ib].height);
-		}
-
-		crop = frame(roi_b); //roi_b is an object of type Rect. crop is an image container. passing roi_b as an argument of frame modifies frame to creates an image container with the dimensions of the rectangle.  
-
-		resize(crop, res, Size(128, 128), 0, 0, INTER_LINEAR); // This will be needed later while saving images. res is also of type Mat. focus is on inputarray.
-		cvtColor(crop, gray, CV_BGR2GRAY); // Convert cropped image to Grayscale
+		if (ac > ab || ic == 0)	 ib = ic;
+  
+		crop = frame(faces[ib]);
+		
+		//resize(crop, res, Size(128, 128), 0, 0, INTER_LINEAR); // This will be needed later while saving images. res is also of type Mat. focus is on inputarray.
+		//cvtColor(crop, gray, CV_BGR2GRAY); // Convert cropped image to Grayscale
 
 		Point pt1(faces[ib].x, faces[ib].y);
 		Point pt2((faces[ib].x + faces[ib].width), (faces[ib].y + faces[ib].height));
-		Point cen_rec(roi_b.x + roi_b.width / 2, roi_b.y + roi_b.height / 2);
+		Point cen_rec(faces[ib].x + faces[ib].width / 2, faces[ib].y + faces[ib].height / 2);
+		double buffer_width, buffer_height;
 
-		rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0); //How is rectangle formed? Unsure whether coords are of left corner. 
-		circle(frame, cen_rec, 1, Scalar(0, 0, 255), CV_FILLED);
+		buffer_width = 0.1*faces[ib].width;
+		buffer_height = 0.1*faces[ib].height;
+		
+		Point Bpt1(pt1.x + ((faces[ib].width - buffer_width) / 2), pt1.y + ((faces[ib].height - buffer_height) / 2));
+		Point Bpt2(pt1.x + ((faces[ib].width + buffer_width) / 2), pt1.y + ((faces[ib].height + buffer_height) / 2));
+
+		rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0); //Coords pt1 are of left corner. 
+		rectangle(frame, Bpt2, Bpt1, Scalar(255,0,0), 2, 8 ,0); //Enclsoing the buffer zone. Defined to deal with slight variations in center of rectangle.
+		circle(frame, cen_rec, 1, Scalar(0, 0, 255), CV_FILLED); //Marks the center of detected face.
+		arrowedLine(frame, cen_win, Point(cen_win.x, cen_rec.y), Scalar(255, 0, 255), 1, 8, 0, 0.1); //Helps visualise the extent of camera tilt required to center face 
+		arrowedLine(frame, cen_win, Point(cen_rec.x, cen_win.y), Scalar(255, 0, 255), 1, 8, 0, 0.1); //Helps viualise the extent of panning required to center face.  
 	}
-
-	cout << "Center of rectangle = ( " << roi_b.x + roi_b.width / 2 << ", " << roi_b.y + roi_b.height / 2 << ")\n";
+	
+	if (faces[ib].width > 0 && faces[ib].width < 40) cout << "Crop area: " << faces[ib].width << " * " << faces[ib].height;
+	//We should probably exclude faces with width less than 40 pixels as the results with them are very sporadic 
 	
 	// Show image
-	sstm << "Crop area size: " << roi_b.width << "x" << roi_b.height << " Size of window: " << frame.size().width << '*' << frame.size().height;
+	sstm << "Crop area size: " << faces[ib].width << "x" <<faces[ib].height << " Size of window: " << frame.size().width << '*' << frame.size().height;
 	text = sstm.str();
-
-
+	
 	putText(frame, text, cvPoint(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
 	circle(frame, cen_win, 1, Scalar(0, 0, 255), CV_FILLED);
 
