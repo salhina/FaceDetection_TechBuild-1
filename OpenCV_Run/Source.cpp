@@ -129,9 +129,8 @@ void detectAndDisplay(Mat frame)
 		sstm.str(string());
 		
 		double percentage;
-		//percentage = ab / (frame.size().width * frame.size().height) * 100; doesn't work
-		percentage = ((double)ab / (640 * 480)) * 100; 
-		sstm << "Percentage: " << percentage;
+		percentage = ((double)ab) / (frame.size().width * frame.size().height) * 100;
+		sstm << "Percentage: " << percentage << " Tilt: " << (cen_rec.y - cen_win.y)/10 << " Pan: " << (cen_rec.x - cen_win.x) / 10;
 		text = sstm.str();
 		putText(frame, text, cvPoint(30, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
 		sstm.clear();
