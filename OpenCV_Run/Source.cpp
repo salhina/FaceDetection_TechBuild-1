@@ -126,7 +126,7 @@ void detectAndDisplay(Mat frame)
 		text = sstm.str();
 		putText(frame, text, cvPoint(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
 		sstm.clear();
-		sstm.str("");
+		sstm.str(string());
 		
 		double percentage;
 		//percentage = ab / (frame.size().width * frame.size().height) * 100; doesn't work
@@ -135,7 +135,7 @@ void detectAndDisplay(Mat frame)
 		text = sstm.str();
 		putText(frame, text, cvPoint(30, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
 		sstm.clear();
-		sstm.str("");
+		sstm.str(string());
 	}
 	
 	namedWindow("original", WINDOW_NORMAL);
