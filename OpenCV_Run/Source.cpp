@@ -124,12 +124,23 @@ void detectAndDisplay(Mat frame)
 	   // Show image
 		sstm << "Crop area size: " << faces[ib].width << "x" << faces[ib].height << " Size of window: " << frame.size().width << '*' << frame.size().height;
 		text = sstm.str();
-
 		putText(frame, text, cvPoint(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
+		sstm.clear();
+		sstm.str("");
+		
+		double percentage;
+		//percentage = ab / (frame.size().width * frame.size().height) * 100; doesn't work
+		percentage = ((double)ab / (640 * 480)) * 100; 
+		sstm << "Percentage: " << percentage;
+		text = sstm.str();
+		putText(frame, text, cvPoint(30, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
+		sstm.clear();
+		sstm.str("");
 	}
-	   namedWindow("original", WINDOW_NORMAL);
-	   setMouseCallback("original", CallBackFunc, NULL);
-	   imshow("original", frame);
+	
+	namedWindow("original", WINDOW_NORMAL);
+	setMouseCallback("original", CallBackFunc, NULL);
+	imshow("original", frame);
 
 
 	if (!crop.empty())
