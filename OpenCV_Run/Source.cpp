@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <windows.h>
 
 using namespace std;
 using namespace cv;
@@ -31,7 +32,7 @@ int main(void)
 	if (!capture.isOpened())  // check if we succeeded
 		return -1;
      
-	capture.set(CAP_PROP_FPS, 1);
+	//capture.set(CAP_PROP_FPS, 1);
 
 	// Load the cascade
 	if (!face_cascade.load(face_cascade_name)){ printf("--(!)Error loading\n"); return (-1); }
@@ -168,6 +169,9 @@ void detectAndDisplay(Mat frame)
 		//  
 		//} 
 		
+		cout << "X" << cen_rec.x << endl;
+		cout << "Y" << cen_rec.y << endl;
+
 		arrowedLine(frame, cen_win, Point(cen_win.x, cen_rec.y), Scalar(255, 0, 255), 1, 8, 0, 0.1); //Helps visualise the extent of camera tilt required to center face 
 		arrowedLine(frame, cen_win, Point(cen_rec.x, cen_win.y), Scalar(255, 0, 255), 1, 8, 0, 0.1); //Helps viualise the extent of panning required to center face.  
 
@@ -226,3 +230,5 @@ void CallBackFunc(int event, int x, int y, int flags, void * userdata)
 //	 P.x = R.x
 //      
 //}
+
+
