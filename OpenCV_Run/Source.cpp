@@ -80,7 +80,7 @@ void detectAndDisplay(Mat frame)
 	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(40, 40));
 	
 	Point cen_win(frame.size().width / 2, frame.size().height / 2);
-	circle(frame, cen_win, 1, Scalar(0, 0, 255), CV_FILLED);
+	circle(frame, cen_win, 1, Scalar(0, 0, 255), cv::FILLED);
 	
 	Point pt[2];
 	Point cen_rec;
@@ -103,7 +103,7 @@ void detectAndDisplay(Mat frame)
 	
 		cen_rec.x = faces[i].x + faces[i].width / 2;
 		cen_rec.y = faces[i].y + faces[i].height / 2;
-		circle(frame, cen_rec, 1, Scalar(0, 0, 255), CV_FILLED); //Marks the center of detected face.
+		circle(frame, cen_rec, 1, Scalar(0, 0, 255), cv::FILLED); //Marks the center of detected face.
 		
 	}
 		
@@ -178,7 +178,7 @@ void detectAndDisplay(Mat frame)
 	   // Show image
 		sstm << "Crop area size: " << faces[ib].width << "x" << faces[ib].height << " Size of window: " << frame.size().width << '*' << frame.size().height;
 		text = sstm.str();
-		putText(frame, text, cvPoint(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
+		putText(frame, text, cv::Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
 		sstm.clear();
 		sstm.str(string());
 		
@@ -186,7 +186,7 @@ void detectAndDisplay(Mat frame)
 		percentage = ((double)ab) / (frame.size().width * frame.size().height) * 100;
 		sstm << "Percentage: " << percentage << " Tilt: " << (cen_rec.y - cen_win.y)/10 << " Pan: " << (cen_rec.x - cen_win.x) / 10;
 		text = sstm.str();
-		putText(frame, text, cvPoint(30, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0, 0, 255), 1, CV_AA);
+		putText(frame, text, cv::Point(30, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
 		sstm.clear();
 		sstm.str(string());
 	}
